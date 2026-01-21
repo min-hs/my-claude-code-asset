@@ -1,70 +1,132 @@
-# 코딩 스타일
+# 코딩 스타일 규칙
 
-## 불변성 (필수)
+임베디드 C/C++ 코딩 스타일 가이드입니다.
 
-항상 새 객체 생성, 절대 뮤테이션 금지:
+## 네이밍 규칙
 
-```javascript
-// 잘못됨: 뮤테이션
-function updateUser(user, name) {
-  user.name = name  // 뮤테이션!
-  return user
+### 함수명
+```c
+// snake_case 사용
+int parse_message(uint8_t* buf, size_t len);
+static void handle_timeout(void);
+```
+
+### 구조체/열거형
+```c
+// PascalCase 사용
+typedef struct {
+    uint8_t type;
+    uint16_t length;
+} MessageHeader;
+
+typedef enum {
+    STATE_IDLE,
+    STATE_CHARGING,
+    STATE_ERROR
+} ChargeState;
+```
+
+### 매크로/상수
+```c
+// UPPER_SNAKE_CASE 사용
+#define MAX_BUFFER_SIZE     1024
+#define CHARGE_TIMEOUT_MS   5000
+```
+
+### 변수명
+```c
+// snake_case, 의미 있는 이름
+uint8_t rx_buffer[MAX_BUFFER_SIZE];
+int32_t current_temperature;
+bool is_charging;
+```
+
+## 포맷팅
+
+### 들여쓰기
+- 4 spaces (탭 금지)
+
+### 중괄호
+```c
+// K&R 스타일
+if (condition) {
+    do_something();
+} else {
+    do_other();
 }
 
-// 올바름: 불변성
-function updateUser(user, name) {
-  return {
-    ...user,
-    name
-  }
+// 함수는 새 줄
+void function_name(void)
+{
+    // body
 }
 ```
 
-## 파일 구성
+### 라인 길이
+- 최대 100자
 
-작은 파일 여러 개 > 큰 파일 소수:
-- 높은 응집도, 낮은 결합도
-- 일반적으로 200-400줄, 최대 800줄
-- 큰 컴포넌트에서 유틸리티 추출
-- 타입별이 아닌 기능/도메인별로 구성
+## 코드 구조
 
-## 에러 처리
+### 함수 길이
+- 최대 50줄
+- 초과 시 분리
 
-항상 포괄적으로 에러 처리:
+### 파일 길이
+- 최대 800줄
+- 초과 시 모듈 분리
 
-```typescript
-try {
-  const result = await riskyOperation()
-  return result
-} catch (error) {
-  console.error('작업 실패:', error)
-  throw new Error('사용자 친화적인 상세 메시지')
+### 중첩 깊이
+- 최대 3단계
+```c
+// 나쁜 예
+if (a) {
+    if (b) {
+        if (c) {
+            if (d) {  // 4단계 - 금지
+            }
+        }
+    }
 }
+
+// 좋은 예: early return
+if (!a) return;
+if (!b) return;
+if (!c) return;
+// 로직 수행
 ```
 
-## 입력 검증
+## 주석
 
-항상 사용자 입력 검증:
-
-```typescript
-import { z } from 'zod'
-
-const schema = z.object({
-  email: z.string().email(),
-  age: z.number().int().min(0).max(150)
-})
-
-const validated = schema.parse(input)
+### 파일 헤더
+```c
+/**
+ * @file    message_parser.c
+ * @brief   V2G 메시지 파싱 모듈
+ * @author  min-dev
+ * @date    2024-01-01
+ */
 ```
 
-## 코드 품질 체크리스트
+### 함수 주석
+```c
+/**
+ * @brief   메시지를 파싱한다
+ * @param   buf     입력 버퍼
+ * @param   len     버퍼 길이
+ * @param   msg     결과 메시지 구조체
+ * @return  0: 성공, 음수: 에러
+ */
+int parse_message(uint8_t* buf, size_t len, Message* msg);
+```
 
-작업 완료 표시 전:
-- [ ] 코드가 읽기 쉽고 이름이 적절함
-- [ ] 함수가 작음 (<50줄)
-- [ ] 파일이 집중됨 (<800줄)
-- [ ] 깊은 중첩 없음 (>4단계)
-- [ ] 적절한 에러 처리
-- [ ] console.log 문 없음
-- [ ] 하드코딩된 값 없음
-- [ ] 뮤테이션 없음 (불변 패턴 사용)
+### 인라인 주석
+```c
+// 한국어 주석 권장
+uint32_t timeout = 5000;  // 충전 타임아웃 (ms)
+```
+
+## 금지 사항
+- 매직넘버 하드코딩
+- goto 문 (에러 처리 제외)
+- 전역 변수 남용
+- 암묵적 타입 변환
