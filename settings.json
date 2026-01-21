@@ -1,10 +1,4 @@
 {
-  "enabledPlugins": {
-    "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true,
-    "vercel@claude-plugins-official": true
-  },
   "language": "한국어",
   "permissions": {
     "allow": [
@@ -18,20 +12,23 @@
       "Bash(git push:*)",
       "Bash(git pull:*)",
       "Bash(git fetch:*)",
-      "Bash(npm run:*)",
-      "Bash(npm test:*)",
-      "Bash(npm install:*)",
-      "Bash(yarn:*)",
-      "Bash(pnpm:*)",
-      "Bash(npx:*)",
+      "Bash(make:*)",
+      "Bash(cmake:*)",
+      "Bash(gcc:*)",
+      "Bash(g++:*)",
+      "Bash(gdb:*)",
+      "Bash(cppcheck:*)",
+      "Bash(clang-format:*)",
+      "Bash(clang-tidy:*)",
+      "Bash(valgrind:*)",
       "Bash(ls:*)",
       "Bash(pwd:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
       "Bash(which:*)",
       "Bash(gh pr:*)",
-      "Bash(gh issue:*)",
-      "Bash(tsc:*)",
-      "Bash(eslint:*)",
-      "Bash(prettier:*)"
+      "Bash(gh issue:*)"
     ],
     "deny": []
   },
@@ -42,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '[Hook] 코드 수정 완료 - prettier 포맷팅 권장'"
+            "command": "echo '[Hook] 코드 수정 완료 - clang-format 포맷팅 권장'"
           }
         ]
       }
@@ -53,7 +50,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '[Hook] 세션 종료 - console.log 제거 확인하세요'"
+            "command": "echo '[Hook] 세션 종료 - printf 디버깅 제거, 메모리 누수 확인하세요'"
           }
         ]
       }
