@@ -1,21 +1,54 @@
-# 커밋, 푸시, PR 생성
+# Commit-Push-PR 커맨드
 
-현재 변경사항을 커밋하고 푸시한 후 PR을 생성합니다.
+커밋, 푸시, PR 생성을 한 번에 수행합니다.
 
-## 현재 상태
+## 실행 순서
+
+1. 변경사항 확인
 ```bash
 git status
 git diff --stat
-git log --oneline -5
 ```
 
-## 작업 순서
-1. 변경된 파일들을 확인하고 적절한 커밋 메시지 작성
-2. 커밋 메시지는 한국어로, [타입] 형식 사용
-3. 원격 브랜치로 푸시
-4. GitHub PR 생성 (gh pr create 사용)
-5. PR 제목과 본문도 한국어로 작성
+2. 스테이징
+```bash
+git add -A
+```
+
+3. 커밋 (형식 준수)
+```bash
+git commit -m "[타입] 제목
+
+본문 (선택)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+4. 푸시
+```bash
+git push origin <branch-name>
+```
+
+5. PR 생성
+```bash
+gh pr create --title "[타입] 제목" --body "## 변경사항
+- 항목1
+- 항목2
+
+## 테스트
+- [ ] 빌드 통과
+- [ ] 정적 분석 통과"
+```
+
+## 커밋 타입
+- feat: 새 기능
+- fix: 버그 수정
+- docs: 문서 수정
+- style: 코드 포맷팅
+- refactor: 리팩토링
+- test: 테스트 추가
+- chore: 빌드, 설정 변경
 
 ## 주의사항
-- main/master 브랜치에서는 실행하지 않음
-- 민감한 정보가 포함된 파일은 커밋하지 않음
+- main/master 직접 푸시 금지
+- PR 전 빌드 확인 필수
