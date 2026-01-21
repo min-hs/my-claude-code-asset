@@ -1,49 +1,95 @@
-# TDD (테스트 주도 개발)
+# TDD 커맨드
 
-테스트를 먼저 작성하고, 코드를 구현하는 TDD 방식을 적용합니다.
+테스트 주도 개발 방식으로 코드를 작성합니다.
 
 ## TDD 사이클
-
 ```
-RED → GREEN → REFACTOR → REPEAT
-
-RED:      실패하는 테스트 작성
-GREEN:    테스트 통과하는 최소 코드 작성
-REFACTOR: 코드 개선 (테스트 유지)
-REPEAT:   다음 기능/시나리오
+Red → Green → Refactor
+(실패 테스트) → (통과 코드) → (리팩토링)
 ```
 
-## 진행 순서
+## 실행 순서
 
-1. **인터페이스 정의** (SCAFFOLD)
-   - 타입/인터페이스 먼저 정의
-   - 함수 시그니처 작성
+1. 테스트 먼저 작성
+```c
+// test_message_parser.c
+#include "unity.h"
+#include "message_parser.h"
 
-2. **테스트 작성** (RED)
-   - 정상 케이스
-   - 엣지 케이스 (빈 값, null, 최대값)
-   - 에러 케이스
+void test_parse_valid_message(void) {
+    uint8_t buf[] = {0x01, 0x02, 0x03};
+    Message msg;
+    
+    int result = parse_message(buf, sizeof(buf), &msg);
+    
+    TEST_ASSERT_EQUAL(0, result);
+    TEST_ASSERT_EQUAL(0x01, msg.type);
+}
 
-3. **테스트 실행 - 실패 확인**
-   ```bash
-   npm test -- path/to/file.test.ts
-   ```
+void test_parse_null_buffer(void) {
+    Message msg;
+    
+    int result = parse_message(NULL, 0, &msg);
+    
+    TEST_ASSERT_EQUAL(-1, result);
+}
+```
 
-4. **최소 구현** (GREEN)
-   - 테스트만 통과하는 최소한의 코드
+2. 테스트 실행 (실패 확인)
+```bash
+make test
+```
 
-5. **리팩토링** (REFACTOR)
-   - 테스트 유지하며 코드 개선
+3. 최소한의 코드 구현
+```c
+int parse_message(uint8_t* buf, size_t len, Message* msg) {
+    if (buf == NULL || msg == NULL) {
+        return -1;
+    }
+    msg->type = buf[0];
+    return 0;
+}
+```
 
-6. **커버리지 확인**
-   ```bash
-   npm test -- --coverage
-   ```
-   - 목표: 80% 이상
+4. 테스트 실행 (통과 확인)
+```bash
+make test
+```
+
+5. 리팩토링
+- 코드 정리
+- 중복 제거
+- 테스트 재실행
+
+## 임베디드 TDD 팁
+
+### 하드웨어 의존성 분리
+```c
+// 인터페이스 (테스트 가능)
+typedef struct {
+    int (*read)(uint8_t* buf, size_t len);
+    int (*write)(uint8_t* buf, size_t len);
+} CommInterface;
+
+// 실제 구현
+CommInterface uart_comm = { uart_read, uart_write };
+
+// 테스트용 Mock
+CommInterface mock_comm = { mock_read, mock_write };
+```
+
+### 테스트 더블
+- Stub: 고정된 값 반환
+- Mock: 호출 검증
+- Fake: 간단한 구현
+
+## 테스트 체크리스트
+- [ ] 정상 케이스
+- [ ] 경계값 (0, MAX, overflow)
+- [ ] 에러 케이스 (NULL, invalid)
+- [ ] 타이밍 관련 케이스
 
 ## 주의사항
-
-- 테스트를 먼저 작성 (구현 전에!)
-- 한 번에 하나의 테스트만 작성
-- 테스트가 실패하는지 반드시 확인
-- 최소한의 코드만 작성
+- 테스트 없이 코드 작성 금지
+- 한 번에 하나의 테스트만
+- 테스트 코드도 깔끔하게 유지
