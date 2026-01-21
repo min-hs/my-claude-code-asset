@@ -1,20 +1,18 @@
-# My Claude Code Configuration
+# min-dev의 Claude Code 설정
 
-김재현 님의 클로드 코드 configuration 설정 값입니다. 어디서나 이식해서 사용하세요. 
+임베디드 소프트웨어 개발자를 위한 Claude Code 설정 파일입니다.
 
 ## 빠른 설치
 
 다른 컴퓨터에서 Claude Code에게 이렇게 말하세요:
-
 ```
-https://github.com/jh941213/my-claude-code-asset 이 레포의 설정 파일들을 ~/.claude/에 복사해서 적용해줘
+https://github.com/min-hs/my-claude-code-asset 이 레포의 설정 파일들을 ~/.claude/에 복사해서 적용해줘
 ```
 
 ## 수동 설치
-
 ```bash
 # 1. 레포 클론
-git clone https://github.com/jh941213/my-claude-code-asset.git
+git clone https://github.com/min-hs/my-claude-code-asset.git
 cd my-claude-code-asset
 
 # 2. 설정 파일 복사
@@ -30,125 +28,50 @@ echo 'alias cc="claude code"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-## 설치 스크립트
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/jh941213/my-claude-code-asset/main/install.sh | bash
-```
-
-## 구조
-
-```
-.
-├── CLAUDE.md           # 전역 설정 (자동 로드)
-├── settings.json       # 권한 + Hooks + 플러그인
-├── agents/             # 전문 서브에이전트
-│   ├── planner.md
-│   ├── code-reviewer.md
-│   ├── architect.md
-│   ├── security-reviewer.md
-│   └── tdd-guide.md
-├── commands/           # 슬래시 커맨드
-│   ├── plan.md
-│   ├── commit-push-pr.md
-│   ├── verify.md
-│   ├── review.md
-│   ├── simplify.md
-│   ├── tdd.md
-│   ├── build-fix.md
-│   ├── handoff.md
-│   └── compact-guide.md
-└── rules/              # 자동 적용 규칙
-    ├── security.md
-    ├── coding-style.md
-    ├── testing.md
-    ├── git-workflow.md
-    └── performance.md
-```
-
 ## 포함된 기능
 
-### 에이전트 (5개)
+### 에이전트 (4개)
 
 | 에이전트 | 용도 |
-|----------|------|
-| `planner` | 복잡한 기능 계획 수립 |
-| `code-reviewer` | 코드 품질/보안 리뷰 |
-| `architect` | 시스템 아키텍처 설계 |
-| `security-reviewer` | 보안 취약점 분석 |
-| `tdd-guide` | TDD 방식 안내 |
+|---------|------|
+| planner | 복잡한 기능 계획 수립 |
+| code-reviewer | 코드 품질/보안 리뷰 |
+| architect | 시스템 아키텍처 설계 |
+| security-reviewer | 보안 취약점 분석 |
 
 ### 슬래시 커맨드 (9개)
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/plan` | 작업 계획 수립 |
-| `/commit-push-pr` | 커밋 → 푸시 → PR 한 번에 |
-| `/verify` | 테스트, 린트, 빌드 검증 |
-| `/review` | 코드 리뷰 |
-| `/simplify` | 코드 단순화 |
-| `/tdd` | 테스트 주도 개발 |
-| `/build-fix` | 빌드 에러 수정 |
-| `/handoff` | HANDOFF.md 생성 (세션 인계) |
-| `/compact-guide` | 컨텍스트 관리 가이드 |
+| /plan | 작업 계획 수립 |
+| /commit-push-pr | 커밋 → 푸시 → PR 한 번에 |
+| /verify | 빌드, 린트, 테스트 검증 |
+| /review | 코드 리뷰 |
+| /simplify | 코드 단순화 |
+| /tdd | 테스트 주도 개발 |
+| /build-fix | 빌드 에러 수정 |
+| /handoff | HANDOFF.md 생성 (세션 인계) |
+| /compact-guide | 컨텍스트 관리 가이드 |
 
-### 규칙 (5개)
+### 규칙 (6개)
 
 | 규칙 | 내용 |
 |------|------|
-| `security.md` | 보안 가이드라인 |
-| `coding-style.md` | 코딩 스타일 (불변성, 파일 크기 제한) |
-| `testing.md` | 테스트 가이드 |
-| `git-workflow.md` | Git 워크플로우 |
-| `performance.md` | 성능 최적화 |
+| coding-style | 네이밍, 포맷팅, 한글 주석 규칙 |
+| memory-safety | 메모리 할당/해제, 버퍼 오버플로 방지 |
+| interrupt-safety | ISR 규칙, 공유 자원 보호 |
+| error-handling | 에러 코드, 리소스 정리, 재시도 전략 |
+| protocol-rules | ISO 15118, OCPP, Modbus 프로토콜 규칙 |
+| build-debug | Makefile, 컴파일러 경고, 디버그 매크로 |
 
-## 사용법
+## 주요 특징
 
-### 기본 워크플로우
-
-```bash
-# 새 기능 개발
-/plan 로그인 기능 만들어줘     # 계획 수립
-# (계획 확인 후 구현)
-/verify                         # 테스트/빌드 검증
-/commit-push-pr                 # 커밋 → 푸시 → PR
-```
-
-### 컨텍스트 관리
-
-```bash
-# 작업 3-5개 완료 후
-/compact                        # 토큰 압축
-
-# /compact 3번 후
-/handoff                        # HANDOFF.md 생성
-/clear                          # 초기화
-
-# 새 세션에서
-HANDOFF.md 읽고 이어서 작업해줘
-```
-
-### Plan 모드
-
-```
-Shift+Tab → Plan 모드 토글
-복잡한 작업은 Plan 모드에서 계획 → 확정 후 구현
-```
-
-## 핵심 원칙
-
-1. **주니어처럼 대하기** - 작업을 작게 쪼개서 지시
-2. **Plan 모드 먼저** - 복잡한 작업은 계획부터
-3. **컨텍스트 관리** - 80-100k 토큰 전에 리셋
-4. **HANDOFF.md** - 세션 인계 문서 필수
-5. **검증 루프** - 작업 후 반드시 `/verify`
-
-## 참고 자료
-
-- [Boris Cherny 워크플로우](https://www.infoq.com/news/2026/01/claude-code-creator-workflow/)
-- [Affaan의 everything-claude-code](https://github.com/affaan-m/everything-claude-code)
-- [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
+- **임베디드 C/C++ 개발 최적화**: make, gcc, gdb, valgrind 등 지원
+- **프로토콜 지원**: ISO 15118, DIN 70121, OCPP, Modbus
+- **메모리 안전**: 정적 할당 우선, 동적 할당 규칙
+- **인터럽트 안전**: ISR 규칙, 크리티컬 섹션
+- **한국어 주석**: 복잡한 로직에 한글 설명
 
 ## 라이선스
 
-MIT
+MIT License
